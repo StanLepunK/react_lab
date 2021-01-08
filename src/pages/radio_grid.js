@@ -10,20 +10,26 @@ const grid_style = {
   gridTemplateColumns: `repeat(auto-fill, minmax(250px, 1fr))`,
 };
 
-const cell_style = (over_is) => {
+const cell_style = (select_is) => {
   let cursor_is = `auto`;
   if (cursor_is) cursor_is = `pointer`;
+  let bg_color = 'yellow';
+  if (select_is) bg_color = `orange`;
 
   return {
     width: `100%`,
-    height: `100%`,
+    height: `250px`,
     border: `0`,
     padding: `0`,
     cursor: cursor_is,
+    color: 'red',
+    backgroundColor: bg_color,
   };
 };
 
-function Cell({ children }) {
+function Cell(props) {
+  // function Cell({ children }) {
+  // function Cell({ children, ...props }) {
   // over
   const [over_is, set_over_is] = useState(false);
   useEffect(() => {
@@ -47,36 +53,41 @@ function Cell({ children }) {
       onClick={toggle_state}
       onMouseEnter={mouse_state}
       onMouseLeave={mouse_state}
-      style={cell_style(over_is)}
+      style={cell_style(toggle_is)}
     >
-      {children}
+      {/* {children} */}
+      {console.log('props.value', props.value)}
+      {props.value}
     </button>
   );
 }
 
 Cell.propTypes = {
   children: PropTypes.string.isRequired,
+  // props: PropTypes.element,
+  // value: PropTypes.element,
+  value: PropTypes.string,
 };
 
 export default function RadioGrid() {
-  //let radio_elem = ['0', '1', '3', '4', '5', '6', '7', '8'];
-  let radio_elem = [
-    <Cell key="0">truc</Cell>,
-    <Cell key="1">machin</Cell>,
-    <Cell key="2">bidule</Cell>,
-    <Cell key="3">truc</Cell>,
-    <Cell key="4">machin</Cell>,
-    <Cell key="5">bidule</Cell>,
-    <Cell key="6">truc</Cell>,
-    <Cell key="7">machin</Cell>,
-    <Cell key="8">bidule</Cell>,
+  let list = [
+    <Cell key="a" value="truc"></Cell>,
+    <Cell key="b" value="truc"></Cell>,
+    <Cell key="c" value="truc"></Cell>,
+    <Cell key="d" value="truc"></Cell>,
+    <Cell key="e" value="truc"></Cell>,
+    <Cell key="f" value="truc"></Cell>,
+    <Cell key="g" value="truc"></Cell>,
+    <Cell key="h" value="truc"></Cell>,
+    <Cell key="i" value="truc"></Cell>,
   ];
 
   return (
     <div>
+      {/* <div style={grid_style}>{list.map((elem, index) => elem)}</div> */}
       <div style={grid_style}>
-        {radio_elem.map((x, i) => (
-          <Cell key={i}>{x}</Cell>
+        {list.map((elem, index) => (
+          <Cell key={index} value={elem.value} />
         ))}
       </div>
       <Link to="/" className="App-link">
@@ -85,15 +96,3 @@ export default function RadioGrid() {
     </div>
   );
 }
-
-// export const Test = () => {
-//   return (
-//     <div className="App-header">
-//       <Link to="/" className="App-link">
-//         go home
-//       </Link>
-//     </div>
-//   );
-// };
-
-// export default Test;
