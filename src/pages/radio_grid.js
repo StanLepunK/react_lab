@@ -31,14 +31,13 @@ const cell_style = (select_is) => {
   };
 };
 
-// function Cell(props) {
-// function Cell({ children }) {
 function Cell(props) {
   // context
   const context = useContext(RadioGroupContext);
 
   console.log('props.value', props.value);
   console.log('context.onMouseEnter', context.onMouseEnter);
+  console.log('context.onClick', context.onClick);
   console.log('context.is', context.is);
 
   return (
@@ -47,7 +46,7 @@ function Cell(props) {
       // onClick={toggle_state}
       // onMouseEnter={mouse_state}
       // onMouseLeave={mouse_state}
-      style={cell_style(context.is)}
+      style={cell_style(context.is === 'true')}
       // style={cell_style(toggle_is)}
     >
       {props.value}
