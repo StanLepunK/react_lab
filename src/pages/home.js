@@ -24,7 +24,10 @@ export default function Home() {
           go to test
         </Link>
         <Link className="App-link" to="/radio_grid">
-          go to radio grid
+          radio grid
+        </Link>
+        <Link className="App-link" to="/button_grid">
+          button grid
         </Link>
       </header>
     </div>
