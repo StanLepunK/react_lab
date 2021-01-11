@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 // https://dev.to/mrscx/creating-a-radio-button-component-in-react-1l1a
 // https://codepen.io/sethdavis512/pen/WEERNY
 // https://upmostly.com/tutorials/how-to-use-the-usecontext-hook-in-react
+const Cell_grid_context = createContext();
+
 const grid_style = {
   display: 'grid',
   gridTemplateColumns: `repeat(auto-fill, minmax(250px, 1fr))`,
@@ -33,12 +35,18 @@ const cell_style = (select_is) => {
 
 function Cell(props) {
   // context
-  const context = useContext(RadioGroupContext);
+  const context = useContext(Cell_grid_context);
 
-  console.log('props.value', props.value);
-  console.log('context.onMouseEnter', context.onMouseEnter);
-  console.log('context.onClick', context.onClick);
-  console.log('context.is', context.is);
+  // console.log('props.value', props.value);
+  // console.log('context.onMouseEnter', context.onMouseEnter);
+  // console.log('context.onClick', context.onClick);
+  // console.log('context.id', context.id);
+  // console.log('context.is', context.is);
+  console.log('props.id', props.id);
+  if (props.is) {
+    console.log('props.id', props.id);
+    console.log('props.is', props.is);
+  }
 
   return (
     <button
@@ -55,27 +63,13 @@ function Cell(props) {
 }
 
 Cell.propTypes = {
-  children: PropTypes.string,
   value: PropTypes.string,
   is: PropTypes.bool,
+  id: PropTypes.number,
 };
 
 // USE RADIO BUTTON
-function useRadioButtons(name) {
-  // const [value, setState] = useState(null);
-
-  // const handleChange = (event) => {
-  //   setState(event.target.value);
-  // };
-  //overs
-  const [over_is, set_over_is] = useState(false);
-  useEffect(() => {
-    set_over_is(over_is);
-  }, [over_is]);
-  const mouse_state = () => {
-    over_is ? set_over_is(false) : set_over_is(true);
-  };
-
+function useCellGrid(children) {
   // toggle
   const [toggle_is, set_toggle_is] = useState(false);
   useEffect(() => {
@@ -85,29 +79,44 @@ function useRadioButtons(name) {
     toggle_is ? set_toggle_is(false) : set_toggle_is(true);
   };
 
-  const button_props = {
+  let which_is = -1;
+  children.map((elem) => {
+    if (elem.props.id === 0) {
+      which_is = 0;
+    } else {
+      which_is = -1;
+    }
+    console.log('which_is', elem.props.id, which_is);
+  });
+
+  const data = {
     onClick: toggle_state,
-    onMouseEnter: mouse_state,
-    onMouseLeave: mouse_state,
     is: toggle_is.toString(),
     // style: {cell_style(toggle_is)},
   };
 
-  return [toggle_is, button_props];
+  return [toggle_is, data];
 }
-// CONTEXT
-const RadioGroupContext = createContext();
 
-function RadioGroup({ children, name, onClick, onMouseEnter, onMouseLeave }) {
-  const [state, button_props] = useRadioButtons(name);
+// GRID
+function CellGrid(props) {
+  const [state, button_props] = useCellGrid(props.children);
   return (
-    <RadioGroupContext.Provider value={button_props}>
-      {children}
-    </RadioGroupContext.Provider>
+    <Cell_grid_context.Provider value={button_props}>
+      {props.children}
+    </Cell_grid_context.Provider>
   );
 }
+// function CellGrid({ children, ...props }) {
+//   const [state, button_props] = useCell(children);
+//   return (
+//     <Cell_grid_context.Provider value={button_props}>
+//       {children}
+//     </Cell_grid_context.Provider>
+//   );
+// }
 
-RadioGroup.propTypes = {
+CellGrid.propTypes = {
   children: PropTypes.array,
   name: PropTypes.string,
   onClick: PropTypes.func,
@@ -134,13 +143,18 @@ export default function RadioGrid() {
         go home
       </Link>
       <div style={grid_style}>
-        <RadioGroup name="radio grid">
+        <CellGrid name="radio grid">
           {list.map((elem, index) => (
-            <Cell key={index} value={elem.props.value} is={elem.props.is}>
+            <Cell
+              key={index}
+              id={index}
+              value={elem.props.value}
+              is={elem.props.is}
+            >
               {elem.props.value}
             </Cell>
           ))}
-        </RadioGroup>
+        </CellGrid>
       </div>
     </div>
   );
